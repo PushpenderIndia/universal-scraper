@@ -14,14 +14,13 @@ class TestDataExtractor:
         self.temp_dir = tempfile.mkdtemp()
         self.output_dir = tempfile.mkdtemp()
 
-    @patch("universal_scraper.core.data_extractor.genai.configure")
-    @patch("universal_scraper.core.data_extractor.genai.GenerativeModel")
-    def test_init_with_api_key(self, mock_model, mock_configure):
+    @patch("universal_scraper.core.data_extractor.genai.Client")
+    def test_init_with_api_key(self, mock_client):
         """Test DataExtractor initialization with API key"""
         from universal_scraper.core.data_extractor import DataExtractor
 
-        mock_model_instance = Mock()
-        mock_model.return_value = mock_model_instance
+        mock_client_instance = Mock()
+        mock_client.return_value = mock_client_instance
 
         extractor = DataExtractor(
             api_key="test_key",
@@ -33,23 +32,22 @@ class TestDataExtractor:
         assert extractor.api_key == "test_key"
         assert extractor.model_name == "gemini-2.5-flash"
         assert extractor.temp_dir == self.temp_dir
-        mock_configure.assert_called_once_with(api_key="test_key")
+        mock_client.assert_called_once_with(api_key="test_key")
 
-    @patch("universal_scraper.core.data_extractor.genai.configure")
-    @patch("universal_scraper.core.data_extractor.genai.GenerativeModel")
-    def test_init_with_env_var(self, mock_model, mock_configure):
+    @patch("universal_scraper.core.data_extractor.genai.Client")
+    def test_init_with_env_var(self, mock_client):
         """Test DataExtractor initialization with env variable"""
         from universal_scraper.core.data_extractor import DataExtractor
 
-        mock_model_instance = Mock()
-        mock_model.return_value = mock_model_instance
+        mock_client_instance = Mock()
+        mock_client.return_value = mock_client_instance
 
         with patch.dict(os.environ, {"GEMINI_API_KEY": "env_key"}):
             extractor = DataExtractor(
                 temp_dir=self.temp_dir, output_dir=self.output_dir
             )
             assert extractor.model_name == "gemini-2.5-flash"
-            mock_configure.assert_called_once_with(api_key="env_key")
+            mock_client.assert_called_once_with(api_key="env_key")
 
     def test_init_no_api_key(self):
         """Test DataExtractor initialization without API key"""
@@ -82,99 +80,69 @@ class TestDataExtractor:
         from universal_scraper.core.data_extractor import DataExtractor
 
         with patch.dict(os.environ, {"GEMINI_API_KEY": "test_key"}):
-            with patch(
-                "universal_scraper.core.data_extractor.genai.configure"
-            ):
-                with patch(
-                    "universal_scraper.core.data_extractor.genai."
-                    "GenerativeModel"
-                ):
-                    extractor = DataExtractor(
-                        temp_dir=self.temp_dir, output_dir=self.output_dir
-                    )
+            with patch("universal_scraper.core.data_extractor.genai.Client"):
+                extractor = DataExtractor(
+                    temp_dir=self.temp_dir, output_dir=self.output_dir
+                )
 
-                    assert os.path.exists(extractor.extraction_codes_dir)
-                    assert os.path.exists(self.output_dir)
+                assert os.path.exists(extractor.extraction_codes_dir)
+                assert os.path.exists(self.output_dir)
 
     def test_enable_cache_setting(self):
         """Test cache enable/disable setting"""
         from universal_scraper.core.data_extractor import DataExtractor
 
         with patch.dict(os.environ, {"GEMINI_API_KEY": "test_key"}):
-            with patch(
-                "universal_scraper.core.data_extractor.genai.configure"
-            ):
-                with patch(
-                    "universal_scraper.core.data_extractor.genai."
-                    "GenerativeModel"
-                ):
-                    # Test with cache enabled
-                    extractor = DataExtractor(
-                        temp_dir=self.temp_dir,
-                        output_dir=self.output_dir,
-                        enable_cache=True,
-                    )
-                    assert extractor.enable_cache is True
-                    assert extractor.code_cache is not None
+            with patch("universal_scraper.core.data_extractor.genai.Client"):
+                # Test with cache enabled
+                extractor = DataExtractor(
+                    temp_dir=self.temp_dir,
+                    output_dir=self.output_dir,
+                    enable_cache=True,
+                )
+                assert extractor.enable_cache is True
+                assert extractor.code_cache is not None
 
-                    # Test with cache disabled
-                    extractor_no_cache = DataExtractor(
-                        temp_dir=self.temp_dir,
-                        output_dir=self.output_dir,
-                        enable_cache=False,
-                    )
-                    assert extractor_no_cache.enable_cache is False
-                    assert extractor_no_cache.code_cache is None
+                # Test with cache disabled
+                extractor_no_cache = DataExtractor(
+                    temp_dir=self.temp_dir,
+                    output_dir=self.output_dir,
+                    enable_cache=False,
+                )
+                assert extractor_no_cache.enable_cache is False
+                assert extractor_no_cache.code_cache is None
 
     def test_default_model_name(self):
         """Test default model name setting"""
         from universal_scraper.core.data_extractor import DataExtractor
 
         with patch.dict(os.environ, {"GEMINI_API_KEY": "test_key"}):
-            with patch(
-                "universal_scraper.core.data_extractor.genai.configure"
-            ):
-                with patch(
-                    "universal_scraper.core.data_extractor.genai."
-                    "GenerativeModel"
-                ):
-                    extractor = DataExtractor(
-                        temp_dir=self.temp_dir, output_dir=self.output_dir
-                    )
-                    assert extractor.model_name == "gemini-2.5-flash"
+            with patch("universal_scraper.core.data_extractor.genai.Client"):
+                extractor = DataExtractor(
+                    temp_dir=self.temp_dir, output_dir=self.output_dir
+                )
+                assert extractor.model_name == "gemini-2.5-flash"
 
     def test_extraction_history_initialized(self):
         """Test that extraction history is initialized"""
         from universal_scraper.core.data_extractor import DataExtractor
 
         with patch.dict(os.environ, {"GEMINI_API_KEY": "test_key"}):
-            with patch(
-                "universal_scraper.core.data_extractor.genai.configure"
-            ):
-                with patch(
-                    "universal_scraper.core.data_extractor.genai."
-                    "GenerativeModel"
-                ):
-                    extractor = DataExtractor(
-                        temp_dir=self.temp_dir, output_dir=self.output_dir
-                    )
-                    assert hasattr(extractor, "extraction_history")
-                    assert isinstance(extractor.extraction_history, list)
+            with patch("universal_scraper.core.data_extractor.genai.Client"):
+                extractor = DataExtractor(
+                    temp_dir=self.temp_dir, output_dir=self.output_dir
+                )
+                assert hasattr(extractor, "extraction_history")
+                assert isinstance(extractor.extraction_history, list)
 
     def test_logger_configured(self):
         """Test that logger is properly configured"""
         from universal_scraper.core.data_extractor import DataExtractor
 
         with patch.dict(os.environ, {"GEMINI_API_KEY": "test_key"}):
-            with patch(
-                "universal_scraper.core.data_extractor.genai.configure"
-            ):
-                with patch(
-                    "universal_scraper.core.data_extractor.genai."
-                    "GenerativeModel"
-                ):
-                    extractor = DataExtractor(
-                        temp_dir=self.temp_dir, output_dir=self.output_dir
-                    )
-                    assert hasattr(extractor, "logger")
-                    assert extractor.logger is not None
+            with patch("universal_scraper.core.data_extractor.genai.Client"):
+                extractor = DataExtractor(
+                    temp_dir=self.temp_dir, output_dir=self.output_dir
+                )
+                assert hasattr(extractor, "logger")
+                assert extractor.logger is not None
