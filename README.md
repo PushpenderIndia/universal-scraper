@@ -724,7 +724,7 @@ flake8 universal_scraper/ --count --exit-zero --max-complexity=10 --max-line-len
 
 ## License
 
-MIT License - see LICENSE file for details.
+GPT 3.0 License - see LICENSE file for details.
 
 ## Changelog
 
