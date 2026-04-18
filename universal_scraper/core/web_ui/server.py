@@ -1,5 +1,19 @@
 """
 Flask application factory and API route definitions.
+
+Static files are served from  core/web_ui/static/
+HTML template is served from  core/web_ui/templates/index.html
+
+Routes
+------
+GET  /                           → SPA (index.html)
+GET  /static/<path>              → CSS / JS assets
+GET  /api/providers              → provider metadata
+GET  /api/models                 → model list for a provider
+POST /api/scrape                 → start scrape job (single or multi-URL)
+GET  /api/stream/<job_id>        → SSE: scrape job log stream
+POST /api/agent/plan             → start AI agent planning task
+GET  /api/agent/stream/<task_id> → SSE: agent step stream
 """
 
 import json
@@ -9,26 +23,22 @@ import queue
 import threading
 from pathlib import Path
 
-from flask import Flask, Response, jsonify, request, stream_with_context
+from flask import Flask, Response, jsonify, render_template, request, stream_with_context
 
-from .jobs import Job, jobs, run_job
+from .jobs import Job, jobs, run_job, run_multi_url_job
 from .providers import PROVIDERS, get_models
 
-# Path to the HTML template that is served for every GET /
-_TEMPLATE_PATH = Path(__file__).parent / "template.html"
-
-
-def _load_template() -> str:
-    """Read the UI template from disk once at startup."""
-    return _TEMPLATE_PATH.read_text(encoding="utf-8")
+_WEB_UI_DIR = Path(__file__).parent
 
 
 def create_app() -> Flask:
-    """Create and configure the Flask application."""
-    app = Flask(__name__)
+    app = Flask(
+        __name__,
+        template_folder=str(_WEB_UI_DIR / "templates"),
+        static_folder=str(_WEB_UI_DIR / "static"),
+        static_url_path="/static",
+    )
     app.logger.setLevel(logging.WARNING)
-
-    _html = _load_template()
 
     # ------------------------------------------------------------------
     # UI
@@ -36,7 +46,7 @@ def create_app() -> Flask:
 
     @app.route("/")
     def index():
-        return _html
+        return render_template("index.html")
 
     # ------------------------------------------------------------------
     # Providers
@@ -44,7 +54,6 @@ def create_app() -> Flask:
 
     @app.route("/api/providers")
     def api_providers():
-        """Return provider metadata (name, key hint, docs link, saved env key)."""
         payload = {
             key: {
                 "name":       cfg["name"],
@@ -62,14 +71,6 @@ def create_app() -> Flask:
 
     @app.route("/api/models")
     def api_models():
-        """
-        Return the model list for a provider.
-
-        Query params:
-          provider  — one of google | openai | anthropic | ollama
-          api_key   — optional; triggers a live fetch from the provider API
-          api_base  — optional; Ollama base URL override
-        """
         provider = request.args.get("provider", "google")
         api_key  = request.args.get("api_key", "").strip()
         api_base = request.args.get("api_base", "").strip()
@@ -82,7 +83,7 @@ def create_app() -> Flask:
         return jsonify(get_models(provider, api_key, api_base))
 
     # ------------------------------------------------------------------
-    # Scrape
+    # Scrape  (single-URL + multi-URL)
     # ------------------------------------------------------------------
 
     @app.route("/api/scrape", methods=["POST"])
@@ -90,12 +91,13 @@ def create_app() -> Flask:
         """
         Start a scrape job.
 
-        JSON body:
-          url, provider, model, api_key, fields (list), format
-        Returns:
-          {"job_id": "<uuid>"}
+        Body (JSON):
+          urls     – list of URLs  [preferred]
+          url      – single URL    [legacy]
+          provider, model, api_key, fields, format
         """
         body     = request.get_json(force=True) or {}
+        urls     = body.get("urls") or []
         url      = (body.get("url") or "").strip()
         provider = body.get("provider", "google")
         model    = body.get("model", "")
@@ -103,8 +105,13 @@ def create_app() -> Flask:
         fields   = body.get("fields") or []
         fmt      = body.get("format", "json")
 
-        if not url:
-            return jsonify({"error": "URL is required"}), 400
+        # Normalise: prefer `urls`, fall back to single `url`
+        if not urls and url:
+            urls = [url]
+        urls = [u.strip() for u in urls if u and u.strip()]
+
+        if not urls:
+            return jsonify({"error": "At least one URL is required"}), 400
         if not model:
             return jsonify({"error": "Model is required"}), 400
 
@@ -116,24 +123,27 @@ def create_app() -> Flask:
         job = Job()
         jobs[job.job_id] = job
 
-        threading.Thread(
-            target=run_job,
-            args=(job, url, provider, model, api_key, fields, fmt),
-            daemon=True,
-        ).start()
+        if len(urls) == 1:
+            threading.Thread(
+                target=run_job,
+                args=(job, urls[0], provider, model, api_key, fields, fmt),
+                daemon=True,
+            ).start()
+        else:
+            threading.Thread(
+                target=run_multi_url_job,
+                args=(job, urls, provider, model, api_key, fields, fmt),
+                daemon=True,
+            ).start()
 
         return jsonify({"job_id": job.job_id})
 
     # ------------------------------------------------------------------
-    # Log stream (SSE)
+    # Scrape log stream (SSE)
     # ------------------------------------------------------------------
 
     @app.route("/api/stream/<job_id>")
     def api_stream(job_id: str):
-        """
-        Server-Sent Events endpoint.
-        Streams log entries for *job_id* until the job completes.
-        """
         job = jobs.get(job_id)
         if not job:
             return jsonify({"error": "Job not found"}), 404
@@ -149,12 +159,7 @@ def create_app() -> Flask:
                     continue
 
                 if entry.get("type") == "done":
-                    payload = json.dumps({
-                        "type":   "done",
-                        "result": job.result,
-                        "error":  job.error,
-                    })
-                    yield f"data: {payload}\n\n"
+                    yield f"data: {json.dumps({'type':'done','result':job.result,'error':job.error})}\n\n"
                     break
 
                 yield f"data: {json.dumps(entry)}\n\n"
@@ -162,10 +167,67 @@ def create_app() -> Flask:
         return Response(
             stream_with_context(_generate()),
             mimetype="text/event-stream",
-            headers={
-                "Cache-Control":    "no-cache",
-                "X-Accel-Buffering": "no",
-            },
+            headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+        )
+
+    # ------------------------------------------------------------------
+    # Agent: start plan
+    # ------------------------------------------------------------------
+
+    @app.route("/api/agent/plan", methods=["POST"])
+    def api_agent_plan():
+        """
+        Body (JSON):
+          requirement – natural-language description
+          provider, model, api_key
+        """
+        body        = request.get_json(force=True) or {}
+        requirement = (body.get("requirement") or "").strip()
+        provider    = body.get("provider", "google")
+        model       = body.get("model", "")
+        api_key     = (body.get("api_key") or "").strip()
+
+        if not requirement:
+            return jsonify({"error": "requirement is required"}), 400
+
+        if not api_key:
+            env_var = PROVIDERS.get(provider, {}).get("env_var")
+            if env_var:
+                api_key = os.getenv(env_var, "")
+
+        from universal_scraper.core.agent import start_plan
+        task = start_plan(requirement, provider, model or "gemini-2.5-flash", api_key)
+        return jsonify({"task_id": task.task_id})
+
+    # ------------------------------------------------------------------
+    # Agent: event stream (SSE)
+    # ------------------------------------------------------------------
+
+    @app.route("/api/agent/stream/<task_id>")
+    def api_agent_stream(task_id: str):
+        from universal_scraper.core.agent import agent_tasks
+        task = agent_tasks.get(task_id)
+        if not task:
+            return jsonify({"error": "Task not found"}), 404
+
+        def _generate():
+            while True:
+                try:
+                    entry = task.log_queue.get(timeout=25)
+                except queue.Empty:
+                    yield 'data: {"type":"keepalive"}\n\n'
+                    if task.done.is_set():
+                        break
+                    continue
+
+                yield f"data: {json.dumps(entry)}\n\n"
+                if entry.get("type") == "done":
+                    break
+
+        return Response(
+            stream_with_context(_generate()),
+            mimetype="text/event-stream",
+            headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
         )
 
     return app

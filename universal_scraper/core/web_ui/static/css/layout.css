@@ -1,0 +1,91 @@
+/* ── Two-column page layout ─────────────────────────────────────────────── */
+.app{display:flex;min-height:100vh;max-width:1440px;margin:0 auto}
+
+/* ── Main column ────────────────────────────────────────────────────────── */
+.main-col{flex:1;min-width:0;padding:0 28px;display:flex;flex-direction:column}
+
+/* Header */
+header{display:flex;align-items:center;justify-content:space-between;padding:18px 0 16px;border-bottom:1px solid var(--border)}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px}
+.logo svg{color:var(--accent)}
+.badge{font-size:11px;font-weight:600;padding:2px 8px;background:var(--surface2);border:1px solid var(--border2);border-radius:20px;color:var(--text2)}
+.header-right{display:flex;align-items:center;gap:14px}
+.header-links{display:flex;gap:16px;font-size:13px}
+.header-links a{color:var(--text2)}
+.header-links a:hover{color:var(--text)}
+
+/* Multi-URL section */
+.url-section{padding:24px 0 0}
+.url-list{display:flex;flex-direction:column;gap:6px}
+.url-entry{display:flex;align-items:center;gap:8px;animation:fadeIn .15s ease}
+.url-number{font-size:11px;font-weight:700;color:var(--text3);font-family:var(--font-mono);width:18px;text-align:right;flex-shrink:0}
+.url-input{flex:1;padding:11px 14px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);color:var(--text);font-size:14px;font-family:inherit;outline:none;transition:border-color .2s,box-shadow .2s}
+.url-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+.url-input::placeholder{color:var(--text3)}
+.url-footer{display:flex;align-items:center;gap:8px;margin-top:10px}
+.url-spacer{flex:1}
+
+/* Config card */
+.config-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-top:14px}
+.config-row{display:flex;gap:16px;flex-wrap:wrap}
+.config-row+.config-row{margin-top:14px}
+.field-group{display:flex;flex-direction:column;gap:6px;flex:1;min-width:180px}
+.field-group.grow2{flex:2}
+
+/* Status bar */
+.status-bar{height:36px;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text2);padding:0 2px;margin-top:8px}
+
+/* Output panels grid */
+.output-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px;flex:1}
+@media(max-width:768px){.output-grid{grid-template-columns:1fr}}
+
+/* Footer */
+footer{padding:16px 0;text-align:center;font-size:12px;color:var(--text3);border-top:1px solid var(--border);margin-top:20px}
+
+/* ── Agent sidebar ──────────────────────────────────────────────────────── */
+.agent-sidebar{
+  width:390px;min-width:390px;
+  background:var(--surface);
+  border-left:1px solid var(--border);
+  display:flex;flex-direction:column;
+  position:sticky;top:0;height:100vh;
+  overflow:hidden;
+}
+.agent-sidebar.hidden{display:none}
+
+.agent-hdr{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 16px 13px;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.agent-hdr-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px}
+.agent-hdr-title svg{color:var(--accent)}
+
+/* Sidebar toggle (header button) */
+.btn-sidebar-toggle{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:7px 14px;
+  background:rgba(16,185,129,.08);
+  border:1px solid rgba(16,185,129,.2);
+  border-radius:20px;
+  cursor:pointer;
+  font-family:inherit;font-size:12px;font-weight:600;
+  color:var(--accent);
+  transition:all .15s;
+}
+.btn-sidebar-toggle:hover,.btn-sidebar-toggle.active{background:rgba(16,185,129,.18);border-color:var(--accent)}
+
+/* Mobile: sidebar becomes a fixed overlay */
+@media(max-width:1100px){
+  .app{max-width:100%}
+  .main-col{padding:0 16px}
+  .agent-sidebar{
+    position:fixed;right:0;top:0;z-index:50;
+    box-shadow:-4px 0 24px rgba(0,0,0,.5);
+    transform:translateX(100%);
+    transition:transform .25s ease;
+  }
+  .agent-sidebar.visible{transform:translateX(0)}
+  .agent-sidebar.hidden{transform:translateX(100%);display:flex!important}
+}

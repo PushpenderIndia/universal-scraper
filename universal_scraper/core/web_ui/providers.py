@@ -73,13 +73,61 @@ _EXCLUDE_PATTERNS = (
     "ft:",
 )
 
-# Models surfaced at the top of the dropdown (by prefix, in priority order)
-_PREFERRED_PREFIXES = (
-    "gemini-2.5", "gemini-2.0",
-    "gpt-4o", "gpt-4-turbo",
-    "claude-opus-4", "claude-sonnet-4", "claude-haiku-4",
-    "claude-3-5", "claude-3-opus",
-)
+# Model name prefixes ordered by approximate release date, newest first.
+# Handles both bare names ("gemini-2.0-flash") and LiteLLM-prefixed names
+# ("gemini/gemini-2.0-flash") — matching is done after stripping any "provider/" prefix.
+_MODEL_RELEASE_ORDER = [
+    # ── Google Gemini 2.5  (2025) ──────────────────────────────────────────
+    "gemini-2.5-pro-exp", "gemini-2.5-pro-preview", "gemini-2.5-pro",
+    "gemini-2.5-flash-preview", "gemini-2.5-flash",
+    "gemini-2.5",
+    # ── Google Gemini 2.0  (early 2025) ───────────────────────────────────
+    "gemini-2.0-flash-thinking", "gemini-2.0-flash-lite", "gemini-2.0-flash-exp",
+    "gemini-2.0-flash", "gemini-2.0-pro-exp", "gemini-2.0",
+    # ── OpenAI o3 / o4  (2025) ────────────────────────────────────────────
+    "o4-mini", "o3-pro", "o3-mini-high", "o3-mini", "o3",
+    # ── OpenAI GPT-4.5  (2025) ────────────────────────────────────────────
+    "gpt-4.5-turbo", "gpt-4.5-preview", "gpt-4.5",
+    # ── Anthropic Claude 4  (2025) ────────────────────────────────────────
+    "claude-opus-4-5", "claude-opus-4",
+    "claude-sonnet-4-5", "claude-sonnet-4",
+    "claude-haiku-4-5", "claude-haiku-4",
+    # ── OpenAI o1  (2024) ─────────────────────────────────────────────────
+    "o1-pro", "o1-preview", "o1-mini", "o1",
+    # ── OpenAI GPT-4o  (2024) ─────────────────────────────────────────────
+    "gpt-4o-mini-audio", "gpt-4o-audio", "gpt-4o-mini", "gpt-4o",
+    # ── Anthropic Claude 3.5  (2024) ──────────────────────────────────────
+    "claude-3-5-sonnet", "claude-3-5-haiku", "claude-3-5",
+    # ── Google Gemini 1.5  (2024) ─────────────────────────────────────────
+    "gemini-1.5-pro", "gemini-1.5-flash-8b", "gemini-1.5-flash", "gemini-1.5",
+    # ── OpenAI GPT-4 Turbo  (2024) ────────────────────────────────────────
+    "gpt-4-turbo-preview", "gpt-4-turbo",
+    # ── Anthropic Claude 3  (2024) ────────────────────────────────────────
+    "claude-3-opus", "claude-3-sonnet", "claude-3-haiku", "claude-3",
+    # ── Google Gemini 1.0 / Pro  (2023) ───────────────────────────────────
+    "gemini-1.0-pro", "gemini-pro",
+    # ── OpenAI GPT-4  (2023) ──────────────────────────────────────────────
+    "gpt-4-32k", "gpt-4",
+    # ── OpenAI GPT-3.5  (2022) ────────────────────────────────────────────
+    "gpt-3.5-turbo-instruct", "gpt-3.5-turbo", "gpt-3.5",
+]
+
+# Pre-build a rank lookup for O(1) access
+_MODEL_RANK: Dict[str, int] = {name: i for i, name in enumerate(_MODEL_RELEASE_ORDER)}
+
+
+def _model_sort_key(model: str) -> tuple:
+    """
+    Sort key: (tier, rank, name)
+    - tier 0 → matched a known release; rank = position in _MODEL_RELEASE_ORDER
+    - tier 1 → unrecognised; sorted alphabetically
+    Handles LiteLLM-prefixed names like "gemini/gemini-2.0-flash".
+    """
+    bare = model.split("/")[-1].lower()
+    for prefix, rank in _MODEL_RANK.items():
+        if bare.startswith(prefix):
+            return (0, rank, model)
+    return (1, len(_MODEL_RELEASE_ORDER), model)
 
 
 def _is_chat_model(name: str) -> bool:
@@ -89,15 +137,8 @@ def _is_chat_model(name: str) -> bool:
 
 
 def _sort_models(models: List[str]) -> List[str]:
-    """Sort models: preferred prefixes first, then alphabetical."""
-    def _key(m: str):
-        lm = m.lower()
-        for i, prefix in enumerate(_PREFERRED_PREFIXES):
-            if lm.startswith(prefix):
-                return (0, i, m)
-        return (1, 999, m)
-
-    return sorted(models, key=_key)
+    """Sort models newest-first by release date, then alphabetically for unknowns."""
+    return sorted(models, key=_model_sort_key)
 
 
 # ---------------------------------------------------------------------------

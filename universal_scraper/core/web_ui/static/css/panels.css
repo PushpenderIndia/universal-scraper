@@ -1,0 +1,36 @@
+/* ── Output panels ──────────────────────────────────────────────────────── */
+.panel{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;height:520px}
+.panel-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--border);background:var(--surface2);flex-shrink:0}
+.panel-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--text2)}
+.panel-actions{display:flex;gap:6px}
+.results-body{flex:1;min-height:0;overflow-y:auto;padding:14px;font-family:var(--font-mono);font-size:12.5px;line-height:1.7}
+.placeholder-msg{color:var(--text3);display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:8px;text-align:center}
+.placeholder-msg svg{opacity:.3}
+
+/* ── JSON syntax highlight ──────────────────────────────────────────────── */
+.json-key {color:#7dd3fc}
+.json-str {color:#86efac}
+.json-num {color:#fda4af}
+.json-bool{color:#f9a8d4}
+.json-null{color:#94a3b8}
+
+/* ── CSV table ──────────────────────────────────────────────────────────── */
+.csv-table-wrap{overflow:auto;height:100%}
+.csv-table{border-collapse:collapse;font-size:12px;width:100%;min-width:max-content}
+.csv-table th{background:var(--surface2);color:var(--text2);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.4px;padding:7px 12px;border-bottom:2px solid var(--border2);text-align:left;white-space:nowrap;position:sticky;top:0}
+.csv-table td{padding:6px 12px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:top;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.csv-table tr:hover td{background:rgba(255,255,255,.03)}
+.csv-table td:empty::after{content:"—";color:var(--text3)}
+
+/* ── Terminal ────────────────────────────────────────────────────────────── */
+.terminal{flex:1;overflow-y:auto;padding:12px 14px;font-family:var(--font-mono);font-size:12px;line-height:1.65;background:#0d0d0d;color:#cdd6f4}
+.term-prompt{color:var(--accent);margin-bottom:4px;user-select:none}
+.log-line{display:flex;gap:8px;margin-bottom:2px;word-break:break-word}
+.log-ts   {color:var(--text3);flex-shrink:0;font-size:11px}
+.log-level{flex-shrink:0;font-size:11px;font-weight:700;width:48px}
+.log-msg  {flex:1}
+.level-INFO    .log-level{color:var(--blue)}
+.level-DEBUG   .log-level{color:var(--text3)}
+.level-WARNING .log-level{color:var(--yellow)}
+.level-ERROR   .log-level{color:var(--red)}
+.level-ERROR   .log-msg  {color:var(--red)}

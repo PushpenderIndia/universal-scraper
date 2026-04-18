@@ -1,0 +1,70 @@
+/* ── Buttons ─────────────────────────────────────────────────────────────── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 22px;border:none;border-radius:var(--radius);cursor:pointer;font-family:inherit;font-size:14px;font-weight:600;transition:all .15s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-dim)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed}
+.btn-ghost{background:var(--surface2);color:var(--text2);border:1px solid var(--border2)}
+.btn-ghost:hover{background:var(--border2);color:var(--text)}
+.btn-sm{padding:5px 12px;font-size:12px;border-radius:6px}
+.btn-full{width:100%;justify-content:center}
+
+/* Icon-only button (URL remove) */
+.btn-icon{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:30px;height:30px;
+  background:none;border:1px solid var(--border2);border-radius:6px;
+  cursor:pointer;color:var(--text3);transition:all .15s;flex-shrink:0;
+}
+.btn-icon:hover{border-color:var(--red);color:var(--red)}
+
+/* Close button */
+.btn-close{background:none;border:none;cursor:pointer;color:var(--text2);font-size:20px;line-height:1;padding:0;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:4px}
+.btn-close:hover{color:var(--text);background:var(--surface2)}
+
+/* ── Form controls ──────────────────────────────────────────────────────── */
+label.fg-label{font-size:12px;font-weight:600;color:var(--text2);letter-spacing:.4px;text-transform:uppercase}
+
+select,input[type=password],input[type=text],input[type=url]{
+  padding:9px 12px;background:var(--surface2);border:1px solid var(--border2);
+  border-radius:8px;color:var(--text);font-family:inherit;font-size:13px;
+  outline:none;transition:border-color .2s,box-shadow .2s;width:100%
+}
+select:focus,input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+select option{background:var(--surface2)}
+
+/* Model dropdown spinner overlay */
+.model-wrap{position:relative}
+.model-status{position:absolute;right:10px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:4px;pointer-events:none}
+
+/* API key row */
+.api-key-wrap{display:flex;gap:6px}
+.api-key-wrap input{flex:1}
+.api-key-wrap .btn-ghost{padding:9px 12px;flex-shrink:0}
+.key-hint{font-size:11px;color:var(--text3);margin-top:2px}
+.key-hint a{font-size:11px}
+
+/* ── Field chips ────────────────────────────────────────────────────────── */
+.tags-wrap{display:flex;flex-wrap:wrap;gap:6px;min-height:40px;padding:6px 8px;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;align-items:center;cursor:text}
+.tags-wrap:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+.tag{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.3);border-radius:20px;font-size:12px;font-weight:500;color:var(--accent);white-space:nowrap;animation:fadeIn .12s ease}
+.tag button{background:none;border:none;cursor:pointer;color:var(--accent);opacity:.7;font-size:14px;line-height:1;padding:0}
+.tag button:hover{opacity:1}
+#field-input{border:none;background:transparent;outline:none;font-size:13px;color:var(--text);min-width:80px;flex:1}
+#field-input::placeholder{color:var(--text3)}
+
+/* ── Output format radio ─────────────────────────────────────────────────── */
+.radio-group{display:flex;gap:10px}
+.radio-group label{display:flex;align-items:center;gap:6px;cursor:pointer;padding:8px 14px;border:1px solid var(--border2);border-radius:8px;font-size:13px;transition:all .15s;background:var(--surface2)}
+.radio-group label:has(input:checked){border-color:var(--accent);background:rgba(16,185,129,.08);color:var(--accent)}
+.radio-group input[type=radio]{accent-color:var(--accent)}
+
+/* ── Spinners ────────────────────────────────────────────────────────────── */
+.spinner{width:16px;height:16px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+.spinner-sm{width:12px;height:12px;border-width:1.5px}
+
+/* ── Status dot ──────────────────────────────────────────────────────────── */
+.status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dot-idle   {background:var(--border2)}
+.dot-running{background:var(--accent);animation:pulse 1s ease infinite}
+.dot-done   {background:var(--accent)}
+.dot-error  {background:var(--red)}

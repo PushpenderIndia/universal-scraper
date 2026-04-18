@@ -1,0 +1,24 @@
+/* ── Reset + CSS variables ─────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0a;   --surface:#111111; --surface2:#181818;
+  --border:#242424; --border2:#2e2e2e;
+  --accent:#10b981; --accent-dim:#059669; --accent-glow:rgba(16,185,129,.18);
+  --red:#ef4444; --yellow:#f59e0b; --blue:#3b82f6;
+  --text:#e2e8f0; --text2:#94a3b8; --text3:#475569;
+  --radius:10px; --font-mono:'JetBrains Mono',monospace;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;font-size:14px;line-height:1.5}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--text3)}
+
+/* Keyframes (shared) */
+@keyframes spin   {to{transform:rotate(360deg)}}
+@keyframes pulse  {0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes fadeIn {from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}

@@ -1,5 +1,7 @@
 """
-Scrape job lifecycle: queue-based log capture, job state, and the worker thread.
+Scrape job lifecycle: queue-based log capture, job state, and worker threads.
+
+Supports both single-URL (run_job) and multi-URL (run_multi_url_job) scraping.
 """
 
 import csv
@@ -133,6 +135,88 @@ def run_job(
         job.result = result
         items = result.get("metadata", {}).get("items_extracted", 0)
         job.log("INFO", f"Done — {items} item(s) extracted")
+
+    except Exception as exc:
+        job.error = str(exc)
+        job.log("ERROR", f"Failed: {exc}")
+
+    finally:
+        job.detach()
+        job.log_queue.put_nowait({"type": "done"})
+        job.done.set()
+
+
+# ---------------------------------------------------------------------------
+# Multi-URL scrape worker
+# ---------------------------------------------------------------------------
+
+def run_multi_url_job(
+    job: Job,
+    urls: List[str],
+    provider: str,
+    model: str,
+    api_key: str,
+    fields: List[str],
+    fmt: str,
+) -> None:
+    """
+    Scrape multiple URLs sequentially and aggregate the results.
+
+    All per-URL logs flow into the job queue so the browser terminal
+    shows live progress across every URL.
+    """
+    job.attach()
+    try:
+        provider_name = PROVIDERS.get(provider, {}).get("name", provider)
+        job.log("INFO", f"Provider: {provider_name} | Model: {model}")
+        job.log("INFO", f"Scraping {len(urls)} URL(s)")
+
+        from universal_scraper import UniversalScraper
+
+        scraper = UniversalScraper(api_key=api_key or None, model_name=model)
+        if fields:
+            scraper.set_fields(fields)
+
+        job.log("INFO", f"Fields: {', '.join(scraper.get_fields())}")
+
+        all_data: list = []
+        total_raw = 0
+        total_cleaned = 0
+
+        for idx, url in enumerate(urls, 1):
+            job.log("INFO", f"[{idx}/{len(urls)}] Fetching: {url}")
+            try:
+                result = scraper.scrape_url(url, save_to_file=False, format=fmt)
+                data = result.get("data", [])
+                chunk = data if isinstance(data, list) else [data]
+                all_data.extend(chunk)
+                total_raw     += result.get("metadata", {}).get("raw_html_length", 0)
+                total_cleaned += result.get("metadata", {}).get("cleaned_html_length", 0)
+                items = result.get("metadata", {}).get("items_extracted", 0)
+                job.log("INFO", f"[{idx}/{len(urls)}] Done — {items} item(s)")
+            except Exception as exc:
+                job.log("ERROR", f"[{idx}/{len(urls)}] Failed: {exc}")
+
+        combined: Dict = {
+            "urls":      urls,
+            "timestamp": datetime.now().isoformat(),
+            "fields":    scraper.get_fields(),
+            "data":      all_data,
+            "metadata":  {
+                "raw_html_length":     total_raw,
+                "cleaned_html_length": total_cleaned,
+                "items_extracted":     len(all_data),
+                "urls_scraped":        len(urls),
+            },
+        }
+
+        if fmt == "csv":
+            combined["csv_content"] = _to_csv(all_data)
+
+        combined["token_usage"] = scraper.extractor.get_token_usage()
+
+        job.result = combined
+        job.log("INFO", f"All done — {len(all_data)} total item(s) from {len(urls)} URL(s)")
 
     except Exception as exc:
         job.error = str(exc)
