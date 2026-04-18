@@ -43,7 +43,7 @@ setup(
     ),
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/WitesoAI/universal-scraper",
+    url="https://github.com/pushpenderindia/universal-scraper",
     packages=find_packages(),
     py_modules=["main"],
     classifiers=[
@@ -112,8 +112,8 @@ setup(
         "model context protocol",
     ],
     project_urls={
-        "Bug Reports": "https://github.com/WitesoAI/universal-scraper/issues",
-        "Source": "https://github.com/WitesoAI/universal-scraper",
-        "Documentation": "https://github.com/WitesoAI/universal-scraper/wiki",
+        "Bug Reports": "https://github.com/pushpenderindia/universal-scraper/issues",
+        "Source": "https://github.com/pushpenderindia/universal-scraper",
+        "Documentation": "https://github.com/pushpenderindia/universal-scraper/wiki",
     },
 )

@@ -3,14 +3,14 @@
 <h2 align="center"> The Python package for scraping data from any website</h2>
 
 <p align="center">
-<a href="https://www.codefactor.io/repository/github/witesoai/universal-scraper"><img alt="pypi" src="https://www.codefactor.io/repository/github/witesoai/universal-scraper/badge"></a>  
+<a href="https://www.codefactor.io/repository/github/pushpenderindia/universal-scraper"><img alt="pypi" src="https://www.codefactor.io/repository/github/pushpenderindia/universal-scraper/badge"></a>  
 <a href="https://socket.dev/pypi/package/universal-scraper/overview"><img alt="pypi" src="https://socket.dev/api/badge/pypi/package/universal-scraper/latest?artifact_id=tar-gz"></a>
-<img alt="CodeQL Status" src="https://github.com/witesoai/universal-scraper/actions/workflows/codeql-analysis.yml/badge.svg">
-<a href="https://codecov.io/gh/witesoai/universal-scraper"><img alt="codecov" src="https://codecov.io/gh/witesoai/universal-scraper/branch/main/graph/badge.svg"></a>
+<img alt="CodeQL Status" src="https://github.com/pushpenderindia/universal-scraper/actions/workflows/codeql-analysis.yml/badge.svg">
+<a href="https://codecov.io/gh/pushpenderindia/universal-scraper"><img alt="codecov" src="https://codecov.io/gh/pushpenderindia/universal-scraper/branch/main/graph/badge.svg"></a>
 <a href="https://pypi.org/project/universal-scraper/"><img alt="pypi" src="https://img.shields.io/pypi/v/universal-scraper.svg"></a>
 <a href="https://pepy.tech/project/universal-scraper?versions=1*&versions=2*&versions=3*"><img alt="Downloads" src="https://pepy.tech/badge/universal-scraper"></a>
 <a href="https://pepy.tech/project/universal-scraper?versions=1*&versions=2*&versions=3*"><img alt="Downloads" src="https://pepy.tech/badge/universal-scraper/month"></a>
-<a href="https://github.com/WitesoAI/universal-scraper/commits/main"><img alt="GitHub lastest commit" src="https://img.shields.io/github/last-commit/WitesoAI/universal-scraper?color=blue&style=flat-square"></a>
+<a href="https://github.com/pushpenderindia/universal-scraper/commits/main"><img alt="GitHub lastest commit" src="https://img.shields.io/github/last-commit/pushpenderindia/universal-scraper?color=blue&style=flat-square"></a>
 <a href="#"><img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/universal-scraper?style=flat-square"></a>
 </p>
 
@@ -837,7 +837,7 @@ See [ROADMAP.md](ROADMAP.md) for planned features and improvements.
 
 ## Contributors
 
-[Contributors List](https://github.com/WitesoAI/universal-scraper/graphs/contributors)
+[Contributors List](https://github.com/pushpenderindia/universal-scraper/graphs/contributors)
 
 ## Contributing
 
