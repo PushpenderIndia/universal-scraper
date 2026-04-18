@@ -14,13 +14,13 @@
 <a href="#"><img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/universal-scraper?style=flat-square"></a>
 </p>
 
-**An AI Agent that handles all kinds of scraping work for you** — just tell it what fields you want and point it at a URL.
+**An AI Agent that handles all kinds of scraping work for you** - just tell it what fields you want and point it at a URL.
 
-Under the hood the agent writes a custom BeautifulSoup4 extractor for your target page, caches it against a structural hash of the HTML, and reuses that same code on every subsequent run. **The AI is only ever called once per unique page layout** — not on every scrape — so your token spend stays in the single-digit cents range even across thousands of requests. When the page layout changes the agent detects it automatically and regenerates the extractor, then caches the new version.
+Under the hood the agent writes a custom BeautifulSoup4 extractor for your target page, caches it against a structural hash of the HTML, and reuses that same code on every subsequent run. **The AI is only ever called once per unique page layout** - not on every scrape - so your token spend stays in the single-digit cents range even across thousands of requests. When the page layout changes the agent detects it automatically and regenerates the extractor, then caches the new version.
 
 ## Table of Contents
 
-- [Web UI — No-Code Mode](#web-ui--no-code-mode)
+- [Web UI - No-Code Mode](#web-ui--no-code-mode)
 - [How Universal Scraper Works](#how-universal-scraper-works)
 - [Live Working Example](#live-working-example)
 - [How It Works](#how-it-works)
@@ -49,9 +49,9 @@ Under the hood the agent writes a custom BeautifulSoup4 extractor for your targe
 
 --------------------------------------------------------------------------
 
-## Web UI — No-Code Mode
+## Web UI - No-Code Mode
 
-The fastest way to use Universal Scraper — no Python required. Install the package and launch the local web UI with one command:
+The fastest way to use Universal Scraper - no Python required. Install the package and launch the local web UI with one command:
 
 ```bash
 pip install universal-scraper
@@ -66,11 +66,11 @@ Your browser opens automatically at `http://127.0.0.1:5000`.
 
 | Feature | Details |
 |---------|---------|
-| **Provider & Model** | Select Google Gemini, OpenAI, Anthropic, or Ollama. Models are fetched **live** from the provider's API when you enter a key — always current, never hardcoded. Falls back to 1,700+ LiteLLM models when no key is entered. Only text/chat models are listed. |
+| **Provider & Model** | Select Google Gemini, OpenAI, Anthropic, or Ollama. Models are fetched **live** from the provider's API when you enter a key - always current, never hardcoded. Falls back to 1,700+ LiteLLM models when no key is entered. Only text/chat models are listed. |
 | **API Key auto-fill** | `GEMINI_API_KEY`, `OPENAI_API_KEY`, and `ANTHROPIC_API_KEY` environment variables are pre-filled on page load. |
 | **Extraction fields** | Add fields as interactive chips (`product_name`, `price`, `rating` …). Press Enter or comma to add; click × to remove. |
 | **Output formats** | **JSON** → syntax-highlighted result. **CSV** → rendered as an HTML table in the browser; download exports a proper `.csv` file. |
-| **Real-time logs** | Live terminal-style stream (Server-Sent Events) showing every internal step — fetch, clean, AI call, cache hit — as the scrape runs. |
+| **Real-time logs** | Live terminal-style stream (Server-Sent Events) showing every internal step - fetch, clean, AI call, cache hit - as the scrape runs. |
 | **Token usage** | After each scrape a token bar shows total tokens used, prompt/completion split, and cache-hit count. Click **Breakdown →** for a per-API-call modal. |
 
 ### CLI options
@@ -87,7 +87,7 @@ universal-scraper-ui --no-browser      # skip auto-opening the browser
 
 ### Traditional scraping is brittle
 
-Writing a scraper the old way — `requests` / `cloudscraper` / `selenium` in Python, or `Axios` / `Cheerio` / `Puppeteer` in JS — means hand-crafting BeautifulSoup4 selectors by reading raw HTML. The moment a website updates its layout, every selector breaks. Teams end up spending more time maintaining scrapers than using the data they collect.
+Writing a scraper the old way - `requests` / `cloudscraper` / `selenium` in Python, or `Axios` / `Cheerio` / `Puppeteer` in JS - means hand-crafting BeautifulSoup4 selectors by reading raw HTML. The moment a website updates its layout, every selector breaks. Teams end up spending more time maintaining scrapers than using the data they collect.
 
 ### Universal Scraper fixes this
 
@@ -101,7 +101,7 @@ Instead of hard-coded selectors, the agent **generates a custom BeautifulSoup4 e
 | What would cost with raw HTML sent to AI | **57.5× more tokens**, ~$0.45 per call |
 | Time to extract hundreds of items | **~5 seconds** |
 
-When the page layout changes the agent detects the structural difference, regenerates the extractor automatically, and caches the new version — so you never touch the code.
+When the page layout changes the agent detects the structural difference, regenerates the extractor automatically, and caches the new version - so you never touch the code.
 
 ## How Universal Scraper Works
 
