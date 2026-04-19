@@ -94,13 +94,15 @@ universal-scraper-ui --no-browser      # skip auto-opening the browser
 
 ## Why Universal Scraper?
 
-### Traditional scraping is brittle
+### Traditional scraping and automation is brittle
 
-Writing a scraper the old way - `requests` / `cloudscraper` / `selenium` in Python, or `Axios` / `Cheerio` / `Puppeteer` in JS - means hand-crafting BeautifulSoup4 selectors by reading raw HTML. The moment a website updates its layout, every selector breaks. Teams end up spending more time maintaining scrapers than using the data they collect.
+Writing a scraper the old way means hand-crafting BeautifulSoup4 selectors by reading raw HTML. Browser automation means writing fragile scripts full of hardcoded XPaths and `time.sleep()` calls. The moment a website updates its layout, everything breaks. Teams end up spending more time maintaining scrapers than using the data they collect.
 
 ### Universal Scraper fixes this
 
-Instead of hard-coded selectors, the agent **generates a custom BeautifulSoup4 extractor on the fly** by analysing a compressed snapshot of the page:
+Universal Scraper is two tools in one:
+
+**1. AI Scraper** — Instead of hard-coded selectors, the agent **generates a custom BeautifulSoup4 extractor on the fly** by analysing a compressed snapshot of the page:
 
 | What happens | The numbers |
 |---|---|
@@ -110,7 +112,9 @@ Instead of hard-coded selectors, the agent **generates a custom BeautifulSoup4 e
 | What would cost with raw HTML sent to AI | **57.5× more tokens**, ~$0.45 per call |
 | Time to extract hundreds of items | **~5 seconds** |
 
-When the page layout changes the agent detects the structural difference, regenerates the extractor automatically, and caches the new version - so you never touch the code.
+When the page layout changes the agent detects the structural difference, regenerates the extractor automatically, and caches the new version — so you never touch the code.
+
+**2. Browser Agent** — Describe any browser task in plain English and the agent handles the rest. It opens a real Chromium browser, reads the live page state, and decides which actions to take — navigate, click, type, scroll, extract — step by step, until the task is complete. No scripts to write, no selectors to maintain. Works on JavaScript-heavy SPAs, login-walled pages, and multi-step workflows that a simple HTTP scraper can never reach.
 
 ## How Universal Scraper Works
 
