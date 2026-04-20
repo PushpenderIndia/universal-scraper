@@ -147,14 +147,14 @@ class BrowserAgent:
                     "data":         args.get("data") or {},
                     "total_frames": self._recorder.count(),
                 })
-                history.add_tool_result(tc.id, '{"status":"completed"}')
+                history.add_tool_result(tc.id, '{"status":"completed"}', tool="done")
                 return True
 
             result     = run_tool(self._browser.page, name, args)
             result_str = json.dumps(result)
             self._emit("tool_result", {"step": step, "tool": name, "result": result})
             self._emit_screenshot(step=step, tool=name)
-            history.add_tool_result(tc.id, result_str)
+            history.add_tool_result(tc.id, result_str, tool=name)
 
         return False
 
