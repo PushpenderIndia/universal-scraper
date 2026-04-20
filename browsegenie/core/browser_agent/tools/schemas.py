@@ -1,69 +1,38 @@
-"""Tool schemas sent to the LLM on every call.
-
-Keeping schemas in a dedicated file makes it easy to audit what the model
-can see without wading through dispatch logic.
-"""
-
 from typing import Dict, List
 
-
 TOOL_SCHEMAS: List[Dict] = [
-    # ── Navigation ────────────────────────────────────────────────────────────
+    # ── Navigation ──
     {
         "type": "function",
         "function": {
             "name": "navigate",
-            "description": "Navigate the browser to a URL",
+            "description": "Open URL",
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "url": {"type": "string", "description": "Full URL including https://"},
+                    "url": {"type": "string"},
                 },
                 "required": ["url"],
             },
         },
     },
-    {
-        "type": "function",
-        "function": {
-            "name": "go_back",
-            "description": "Navigate back in browser history",
-            "parameters": {"type": "object", "properties": {}},
-        },
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "go_forward",
-            "description": "Navigate forward in browser history",
-            "parameters": {"type": "object", "properties": {}},
-        },
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "reload",
-            "description": "Reload the current page",
-            "parameters": {"type": "object", "properties": {}},
-        },
-    },
+    {"type": "function", "function": {"name": "go_back", "description": "Back", "parameters": {"type": "object", "properties": {}}}},
+    {"type": "function", "function": {"name": "go_forward", "description": "Forward", "parameters": {"type": "object", "properties": {}}}},
+    {"type": "function", "function": {"name": "reload", "description": "Reload page", "parameters": {"type": "object", "properties": {}}}},
 
-    # ── Interaction ───────────────────────────────────────────────────────────
+    # ── Interaction ──
     {
         "type": "function",
         "function": {
             "name": "click",
-            "description": (
-                "Click an element by interactive-element index (from get_interactive_elements), "
-                "CSS selector, or pixel coordinates"
-            ),
+            "description": "Click element (index | selector | x,y)",
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "index":    {"type": "integer", "description": "Element index from get_interactive_elements"},
-                    "selector": {"type": "string",  "description": "CSS selector"},
-                    "x":        {"type": "integer", "description": "X coordinate"},
-                    "y":        {"type": "integer", "description": "Y coordinate"},
+                    "index": {"type": "integer"},
+                    "selector": {"type": "string"},
+                    "x": {"type": "integer"},
+                    "y": {"type": "integer"},
                 },
             },
         },
@@ -72,13 +41,13 @@ TOOL_SCHEMAS: List[Dict] = [
         "type": "function",
         "function": {
             "name": "fill",
-            "description": "Type text into an input field or textarea",
+            "description": "Type text",
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "selector":    {"type": "string",  "description": "CSS selector of the input element"},
-                    "text":        {"type": "string",  "description": "Text to type"},
-                    "clear_first": {"type": "boolean", "description": "Clear existing text first (default: true)"},
+                    "selector": {"type": "string"},
+                    "text": {"type": "string"},
+                    "clear_first": {"type": "boolean"},
                 },
                 "required": ["selector", "text"],
             },
@@ -88,12 +57,12 @@ TOOL_SCHEMAS: List[Dict] = [
         "type": "function",
         "function": {
             "name": "press_key",
-            "description": "Press a keyboard key (Enter, Tab, Escape, ArrowDown, ArrowUp, etc.)",
+            "description": "Press key",
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "key":      {"type": "string", "description": "Key name e.g. 'Enter', 'Tab', 'Escape'"},
-                    "selector": {"type": "string", "description": "Focus this element first (optional)"},
+                    "key": {"type": "string"},
+                    "selector": {"type": "string"},
                 },
                 "required": ["key"],
             },
@@ -103,11 +72,11 @@ TOOL_SCHEMAS: List[Dict] = [
         "type": "function",
         "function": {
             "name": "hover",
-            "description": "Move the mouse over an element",
+            "description": "Hover element",
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "selector": {"type": "string", "description": "CSS selector"},
+                    "selector": {"type": "string"},
                 },
                 "required": ["selector"],
             },
@@ -117,13 +86,13 @@ TOOL_SCHEMAS: List[Dict] = [
         "type": "function",
         "function": {
             "name": "select_option",
-            "description": "Select an option from a <select> dropdown element",
+            "description": "Select dropdown option",
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "selector": {"type": "string", "description": "CSS selector of the <select> element"},
-                    "value":    {"type": "string", "description": "The value attribute of the option"},
-                    "label":    {"type": "string", "description": "The visible text label of the option"},
+                    "selector": {"type": "string"},
+                    "value": {"type": "string"},
+                    "label": {"type": "string"},
                 },
                 "required": ["selector"],
             },
@@ -133,27 +102,24 @@ TOOL_SCHEMAS: List[Dict] = [
         "type": "function",
         "function": {
             "name": "drag_and_drop",
-            "description": "Drag an element and drop it onto another element",
+            "description": "Drag source → target",
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "source": {"type": "string", "description": "CSS selector of the element to drag"},
-                    "target": {"type": "string", "description": "CSS selector of the drop target"},
+                    "source": {"type": "string"},
+                    "target": {"type": "string"},
                 },
                 "required": ["source", "target"],
             },
         },
     },
 
-    # ── Extraction ────────────────────────────────────────────────────────────
+    # ── Extraction ──
     {
         "type": "function",
         "function": {
             "name": "get_page_content",
-            "description": (
-                "Get the current page URL, title, and visible text. "
-                "Prefer find_elements for targeted lookups — this tool returns broad page text."
-            ),
+            "description": "Page URL, title, text",
             "parameters": {"type": "object", "properties": {}},
         },
     },
@@ -161,12 +127,12 @@ TOOL_SCHEMAS: List[Dict] = [
         "type": "function",
         "function": {
             "name": "find_elements",
-            "description": "Find DOM elements matching a CSS selector and return their properties",
+            "description": "Query DOM elements",
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "selector": {"type": "string",  "description": "CSS selector"},
-                    "limit":    {"type": "integer", "description": "Max elements to return (default: 20)"},
+                    "selector": {"type": "string"},
+                    "limit": {"type": "integer"},
                 },
                 "required": ["selector"],
             },
@@ -176,10 +142,7 @@ TOOL_SCHEMAS: List[Dict] = [
         "type": "function",
         "function": {
             "name": "get_interactive_elements",
-            "description": (
-                "List all interactive elements (links, buttons, inputs) with their index numbers. "
-                "Use the returned indices with click(index=N)."
-            ),
+            "description": "List clickable elements with index",
             "parameters": {"type": "object", "properties": {}},
         },
     },
@@ -187,32 +150,31 @@ TOOL_SCHEMAS: List[Dict] = [
         "type": "function",
         "function": {
             "name": "execute_js",
-            "description": "Evaluate a JavaScript expression in the browser and return the result",
+            "description": "Run JS",
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "script": {"type": "string", "description": "JavaScript expression to evaluate"},
+                    "script": {"type": "string"},
                 },
                 "required": ["script"],
             },
         },
     },
 
-    # ── Scroll ────────────────────────────────────────────────────────────────
+    # ── Scroll ──
     {
         "type": "function",
         "function": {
             "name": "scroll",
-            "description": "Scroll the page in a direction",
+            "description": "Scroll direction",
             "parameters": {
                 "type": "object",
                 "properties": {
                     "direction": {
                         "type": "string",
                         "enum": ["down", "up", "left", "right"],
-                        "description": "Scroll direction",
                     },
-                    "pixels": {"type": "integer", "description": "Pixels to scroll (default: 500)"},
+                    "pixels": {"type": "integer"},
                 },
             },
         },
@@ -221,49 +183,34 @@ TOOL_SCHEMAS: List[Dict] = [
         "type": "function",
         "function": {
             "name": "scroll_to_element",
-            "description": "Scroll until a specific element is in view",
+            "description": "Scroll to selector",
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "selector": {"type": "string", "description": "CSS selector of the target element"},
+                    "selector": {"type": "string"},
                 },
                 "required": ["selector"],
             },
         },
     },
-    {
-        "type": "function",
-        "function": {
-            "name": "scroll_to_bottom",
-            "description": "Scroll to the very bottom of the page",
-            "parameters": {"type": "object", "properties": {}},
-        },
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "scroll_to_top",
-            "description": "Scroll to the very top of the page",
-            "parameters": {"type": "object", "properties": {}},
-        },
-    },
+    {"type": "function", "function": {"name": "scroll_to_bottom", "description": "Scroll bottom", "parameters": {"type": "object", "properties": {}}}},
+    {"type": "function", "function": {"name": "scroll_to_top", "description": "Scroll top", "parameters": {"type": "object", "properties": {}}}},
 
-    # ── Wait ──────────────────────────────────────────────────────────────────
+    # ── Wait ──
     {
         "type": "function",
         "function": {
             "name": "wait_for_element",
-            "description": "Wait for an element to reach a specific state on the page",
+            "description": "Wait for element state",
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "selector": {"type": "string", "description": "CSS selector"},
+                    "selector": {"type": "string"},
                     "state": {
                         "type": "string",
                         "enum": ["visible", "hidden", "attached", "detached"],
-                        "description": "State to wait for (default: visible)",
                     },
-                    "timeout": {"type": "integer", "description": "Timeout in milliseconds (default: 10000)"},
+                    "timeout": {"type": "integer"},
                 },
                 "required": ["selector"],
             },
@@ -273,16 +220,15 @@ TOOL_SCHEMAS: List[Dict] = [
         "type": "function",
         "function": {
             "name": "wait_for_load",
-            "description": "Wait for the page to finish loading",
+            "description": "Wait for load state",
             "parameters": {
                 "type": "object",
                 "properties": {
                     "state": {
                         "type": "string",
                         "enum": ["load", "domcontentloaded", "networkidle"],
-                        "description": "Load state to wait for (default: domcontentloaded)",
                     },
-                    "timeout": {"type": "integer", "description": "Timeout in milliseconds (default: 10000)"},
+                    "timeout": {"type": "integer"},
                 },
             },
         },
@@ -291,29 +237,29 @@ TOOL_SCHEMAS: List[Dict] = [
         "type": "function",
         "function": {
             "name": "wait_for_url",
-            "description": "Wait for the browser URL to match a pattern",
+            "description": "Wait for URL match",
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "url_pattern": {"type": "string", "description": "URL glob or regex pattern to wait for"},
-                    "timeout":     {"type": "integer", "description": "Timeout in milliseconds (default: 10000)"},
+                    "url_pattern": {"type": "string"},
+                    "timeout": {"type": "integer"},
                 },
                 "required": ["url_pattern"],
             },
         },
     },
 
-    # ── Control ───────────────────────────────────────────────────────────────
+    # ── Control ──
     {
         "type": "function",
         "function": {
             "name": "done",
-            "description": "Mark the task as complete. Call this when the task is fully finished.",
+            "description": "Finish task",
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "summary": {"type": "string", "description": "Summary of what was accomplished"},
-                    "data":    {"type": "object", "description": "Extracted data or results (optional)"},
+                    "summary": {"type": "string"},
+                    "data": {"type": "object"},
                 },
                 "required": ["summary"],
             },
