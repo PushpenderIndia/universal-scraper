@@ -14,7 +14,7 @@ All notable changes to this project will be documented in this file.
 ## v1.9.2 - URL Optimization & Refactoring Release
 - **NEW**: URL placeholder replacement - replaces long URLs (src, href, action) with short placeholders like `[IMG_URL]`, `[LINK_URL]` to reduce token count
 - **REFACTOR**: Complete HTML cleaner modularization - split monolithic 1240+ line file into 8 focused components
-- **ARCHITECTURE**: New modular structure with `universal_scraper/core/cleaning/` package containing specialized modules:
+- **ARCHITECTURE**: New modular structure with `browsegenie/core/cleaning/` package containing specialized modules:
   - `base_cleaner.py` - Common utilities and configuration
   - `noise_remover.py` - Scripts, styles, comments, SVG, iframe removal
   - `url_replacer.py` - **NEW: URL placeholder replacement functionality**
@@ -63,7 +63,7 @@ All notable changes to this project will be documented in this file.
 - 🔧 **NEW**: CLI now supports OpenAI, Anthropic, and 100+ other AI models  
 - 📝 **NEW**: `--api-key` and `--model` CLI arguments for any provider
 - 🎯 **NEW**: `--fields` CLI argument for custom field extraction
-- 🔄 **ENHANCEMENT**: Dynamic help examples showing `universal-scraper` instead of `python main.py`
+- 🔄 **ENHANCEMENT**: Dynamic help examples showing `browsegenie` instead of `python main.py`
 - 📋 **ENHANCEMENT**: Better CLI error handling and user feedback
 - 🌍 **ENHANCEMENT**: Environment variable auto-detection in CLI
 - 🛠️ **API**: Backward compatible - existing CLI usage still works
@@ -104,7 +104,7 @@ All notable changes to this project will be documented in this file.
 
 ## v1.1.0
 - ✨ **NEW**: Gemini model selection functionality
-- 🔧 Added `model_name` parameter to `UniversalScraper()` constructor
+- 🔧 Added `model_name` parameter to `BrowseGenie()` constructor
 - 🔧 Added `get_model_name()` and `set_model_name()` methods
 - 🔧 Enhanced convenience `scrape()` function with `model_name` parameter  
 - 🔄 Updated default model to `gemini-2.5-flash`

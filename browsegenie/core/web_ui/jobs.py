@@ -113,9 +113,9 @@ def run_job(
         job.log("INFO", f"Provider: {provider_name} | Model: {model}")
 
         # Import here to avoid circular imports at module load time.
-        from universal_scraper import UniversalScraper
+        from browsegenie import BrowseGenie
 
-        scraper = UniversalScraper(api_key=api_key or None, model_name=model)
+        scraper = BrowseGenie(api_key=api_key or None, model_name=model)
         if fields:
             scraper.set_fields(fields)
 
@@ -171,9 +171,9 @@ def run_multi_url_job(
         job.log("INFO", f"Provider: {provider_name} | Model: {model}")
         job.log("INFO", f"Scraping {len(urls)} URL(s)")
 
-        from universal_scraper import UniversalScraper
+        from browsegenie import BrowseGenie
 
-        scraper = UniversalScraper(api_key=api_key or None, model_name=model)
+        scraper = BrowseGenie(api_key=api_key or None, model_name=model)
         if fields:
             scraper.set_fields(fields)
 

@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-Universal Web Scraper CLI
+BrowseGenie CLI
 A command-line interface for AI-powered web scraping with
 multi-provider support.
 
 Usage:
-    universal-scraper <URL> [--output OUTPUT_FILE] [--api-key API_KEY]
+    browsegenie <URL> [--output OUTPUT_FILE] [--api-key API_KEY]
     [--model MODEL]
 
 Example:
-    universal-scraper https://example.com/jobs --output jobs_data.json
-    universal-scraper https://example.com/products --api-key YOUR_KEY
+    browsegenie https://example.com/jobs --output jobs_data.json
+    browsegenie https://example.com/products --api-key YOUR_KEY
     --model gpt-4
 """
 
@@ -22,7 +22,7 @@ import sys
 from datetime import datetime
 from urllib.parse import urlparse
 
-from universal_scraper.scraper import UniversalScraper
+from browsegenie.scraper import BrowseGenie
 
 
 def setup_logging(level):
@@ -106,7 +106,7 @@ def scrape_multiple_urls(urls_file, scraper, output_dir, format_type="json"):
 async def run_mcp_server():
     """Run the MCP server"""
     try:
-        from universal_scraper.mcp_server import main as mcp_main
+        from browsegenie.mcp_server import main as mcp_main
         await mcp_main()
     except ImportError:
         print("Error: MCP dependencies not installed. Install with: pip install mcp")
@@ -119,20 +119,20 @@ async def run_mcp_server():
 def main():
     parser = argparse.ArgumentParser(
         description=(
-            "Universal Web Scraper - AI-powered structured data extraction "
+            "BrowseGenie - AI-powered structured data extraction "
             "with multi-provider support"
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  universal-scraper https://example.com/jobs
-  universal-scraper https://example.com/products --output products.json
-  universal-scraper https://news.ycombinator.com --api-key YOUR_GEMINI_KEY
-  universal-scraper https://example.com/data --api-key YOUR_OPENAI_KEY
+  browsegenie https://example.com/jobs
+  browsegenie https://example.com/products --output products.json
+  browsegenie https://news.ycombinator.com --api-key YOUR_GEMINI_KEY
+  browsegenie https://example.com/data --api-key YOUR_OPENAI_KEY
   --model gpt-4
-  universal-scraper https://example.com/content
+  browsegenie https://example.com/content
   --api-key YOUR_ANTHROPIC_KEY --model claude-3-haiku-20240307
-  universal-scraper --urls urls.txt --output-dir scraped_data --format csv
+  browsegenie --urls urls.txt --output-dir scraped_data --format csv
 
 Multi-Provider Support:
   • Gemini (default): Set GEMINI_API_KEY or use --api-key with Gemini key
@@ -229,7 +229,7 @@ Multi-Provider Support:
 
     # Handle MCP server mode
     if args.mcp_server:
-        print("Starting Universal Scraper MCP Server...")
+        print("Starting BrowseGenie MCP Server...")
         print("Server ready to receive MCP requests via stdio")
         asyncio.run(run_mcp_server())
         return
@@ -239,7 +239,7 @@ Multi-Provider Support:
         api_key = args.api_key or args.gemini_key
 
         # Initialize scraper with multi-provider support
-        scraper = UniversalScraper(
+        scraper = BrowseGenie(
             api_key=api_key,
             temp_dir=args.temp_dir,
             output_dir=args.output_dir,

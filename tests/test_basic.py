@@ -1,4 +1,4 @@
-"""Basic tests for Universal Scraper"""
+"""Basic tests for BrowseGenie"""
 
 
 def test_import_main():
@@ -8,11 +8,11 @@ def test_import_main():
     assert main is not None
 
 
-def test_import_universal_scraper():
-    """Test that universal_scraper package can be imported"""
-    import universal_scraper
+def test_import_browsegenie():
+    """Test that browsegenie package can be imported"""
+    import browsegenie
 
-    assert universal_scraper is not None
+    assert browsegenie is not None
 
 
 def test_basic_assertion():

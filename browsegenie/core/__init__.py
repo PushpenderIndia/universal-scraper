@@ -1,5 +1,5 @@
 """
-Core functionality for Universal Scraper.
+Core functionality for BrowseGenie.
 
 This module contains the core components for web scraping:
 - html_fetcher: HTML content fetching

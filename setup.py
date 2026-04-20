@@ -1,5 +1,5 @@
 """
-Setup script for Universal Scraper package
+Setup script for BrowseGenie package
 """
 
 from setuptools import setup, find_packages
@@ -7,8 +7,8 @@ import os
 
 # Get version from the package
 def get_version():
-    """Get version from universal_scraper/__init__.py"""
-    version_file = os.path.join(os.path.dirname(__file__), 'universal_scraper', '__init__.py')
+    """Get version from browsegenie/__init__.py"""
+    version_file = os.path.join(os.path.dirname(__file__), 'browsegenie', '__init__.py')
     with open(version_file, 'r') as f:
         for line in f:
             if line.startswith('__version__'):
@@ -24,7 +24,7 @@ try:
         long_description = f.read()
 except FileNotFoundError:
     long_description = """
-    Universal Scraper - AI-powered web scraping with customizable
+    BrowseGenie - AI-powered web scraping with customizable
     field extraction
 
     A Python module that uses AI to automatically extract structured data
@@ -33,7 +33,7 @@ except FileNotFoundError:
     """
 
 setup(
-    name="universal-scraper",
+    name="browsegenie",
     version=get_version(),
     author="Witeso",
     author_email="support@witeso.com",
@@ -42,13 +42,13 @@ setup(
     ),
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/pushpenderindia/universal-scraper",
+    url="https://github.com/pushpenderindia/browsegenie",
     packages=find_packages(),
     py_modules=["main"],
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
-        "License :: OSI Approved :: MIT License",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.7",
@@ -87,9 +87,9 @@ setup(
     },
     entry_points={
         "console_scripts": [
-            "universal-scraper=main:main",
-            "universal-scraper-mcp=universal_scraper.mcp_server:main_sync",
-            "universal-scraper-ui=universal_scraper.web_ui:main",
+            "browsegenie=main:main",
+            "browsegenie-mcp=browsegenie.mcp_server:main_sync",
+            "browsegenie-ui=browsegenie.web_ui:main",
         ],
     },
     keywords=[
@@ -120,8 +120,8 @@ setup(
         "tool calling agent",
     ],
     project_urls={
-        "Bug Reports": "https://github.com/pushpenderindia/universal-scraper/issues",
-        "Source": "https://github.com/pushpenderindia/universal-scraper",
-        "Documentation": "https://github.com/pushpenderindia/universal-scraper/wiki",
+        "Bug Reports": "https://github.com/pushpenderindia/browsegenie/issues",
+        "Source": "https://github.com/pushpenderindia/browsegenie",
+        "Documentation": "https://github.com/pushpenderindia/browsegenie/wiki",
     },
 )

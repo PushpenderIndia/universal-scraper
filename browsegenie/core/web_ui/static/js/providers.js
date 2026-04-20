@@ -1,8 +1,8 @@
 // ── Provider + model dropdown management ─────────────────────────────────
 
-const _LS_KEY          = provider => `universal-scraper-${provider}`;
-const _LS_PROVIDER_KEY = "universal-scraper-provider";
-const _LS_MODEL_KEY    = provider => `universal-scraper-model-${provider}`;
+const _LS_KEY          = provider => `browsegenie-${provider}`;
+const _LS_PROVIDER_KEY = "browsegenie-provider";
+const _LS_MODEL_KEY    = provider => `browsegenie-model-${provider}`;
 
 // ── localStorage helpers ──────────────────────────────────────────────────
 

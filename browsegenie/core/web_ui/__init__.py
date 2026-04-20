@@ -1,10 +1,10 @@
 """
-universal_scraper.core.web_ui
+browsegenie.core.web_ui
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Local web UI package for Universal Scraper.
+Local web UI package for BrowseGenie.
 
 Public surface:
-  main()        — CLI entry point (universal-scraper-ui command)
+  main()        — CLI entry point (browsegenie-ui command)
   create_app()  — Flask application factory
 """
 
