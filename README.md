@@ -55,7 +55,7 @@ When the page layout changes the agent detects it automatically and regenerates 
 
 ## Web UI - No-Code Mode
 
-The fastest way to use BrowseGenie - no Python required. Install the package and launch the local web UI with one command:
+The fastest way to use BrowseGenie - no Coding required. Install the package and launch the local web UI with one command:
 
 ```bash
 pip install browsegenie
