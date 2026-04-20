@@ -141,7 +141,7 @@ sudo pipx install "browsegenie[mcp]" --global
 1. **Clone the repository**:
    ```bash
    git clone <repository-url>
-   cd Universal_Scrapper
+   cd browsegenie
    ```
 
 2. **Install dependencies**:

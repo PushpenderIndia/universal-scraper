@@ -44,6 +44,13 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/pushpenderindia/browsegenie",
     packages=find_packages(),
+    include_package_data=True,
+    package_data={
+        "browsegenie": [
+            "core/web_ui/templates/**",
+            "core/web_ui/static/**/*",
+        ],
+    },
     py_modules=["main"],
     classifiers=[
         "Development Status :: 4 - Beta",
@@ -73,6 +80,7 @@ setup(
         "cloudscraper>=1.2.0",
         "flask>=2.3.0",
         "playwright>=1.40.0",
+        "mcp>=1.0.0",
     ],
     extras_require={
         "dev": [
@@ -82,9 +90,6 @@ setup(
             "flake8>=5.0.0",
             "mypy>=1.0.0",
         ],
-        "mcp": [
-            "mcp>=1.0.0",
-        ]
     },
     entry_points={
         "console_scripts": [

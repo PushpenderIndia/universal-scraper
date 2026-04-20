@@ -1,0 +1,2 @@
+recursive-include browsegenie/core/web_ui/templates *
+recursive-include browsegenie/core/web_ui/static *
