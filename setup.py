@@ -38,8 +38,7 @@ setup(
     author="Witeso",
     author_email="support@witeso.com",
     description=(
-        "AI-powered web scraping with customizable field extraction "
-        "using multiple AI providers"
+        "Agentic browser automation and web scraping, just using a prompt"
     ),
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -112,6 +111,13 @@ setup(
         "multi-provider",
         "mcp",
         "model context protocol",
+        "browser automation",
+        "agentic-ai",
+        "playwright",
+        "ai agent",
+        "autonomous agents",
+        "llm",
+        "tool calling agent",
     ],
     project_urls={
         "Bug Reports": "https://github.com/pushpenderindia/universal-scraper/issues",

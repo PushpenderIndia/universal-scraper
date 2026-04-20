@@ -8,7 +8,7 @@ and extracting structured data using AI.
 from .scraper import UniversalScraper, scrape
 from .browser import browse
 
-__version__ = "1.9.7"
+__version__ = "1.9.8"
 __author__ = "Witeso"
 __email__ = "support@witeso.com"
 

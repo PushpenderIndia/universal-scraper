@@ -14,11 +14,13 @@
 <a href="#"><img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/universal-scraper?style=flat-square"></a>
 </p>
 
-**An AI Agent that handles all kinds of scraping work for you** - just tell it what fields you want and point it at a URL.
+**An AI Agent that can do any kind of browser automation task and web scraping, just using a single prompt.**
 
-Under the hood the agent writes a custom BeautifulSoup4 extractor for your target page, caches it against a structural hash of the HTML, and reuses that same code on every subsequent run. 
+Point it at any website, describe what you want — the agent navigates, clicks, scrolls, and extracts the data for you. No scripts. No selectors. No maintenance.
 
-**The AI is only ever called once per unique page layout** - not on every scrape - so your token spend stays in the single-digit cents range even across thousands of requests. 
+Under the hood the scraping agent writes a custom BeautifulSoup4 extractor for your target page, caches it against a structural hash of the HTML, and reuses that same code on every subsequent run.
+
+**The AI is only ever called once per unique page layout** - not on every scrape - so your token spend stays in the single-digit cents range even across thousands of requests.
 
 When the page layout changes the agent detects it automatically and regenerates the extractor, then caches the new version.
 
