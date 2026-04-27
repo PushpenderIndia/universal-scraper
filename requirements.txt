@@ -26,3 +26,6 @@ flask>=2.3.0
 # Browser Agent
 playwright>=1.40.0
 
+# Model Context Protocol
+mcp>=1.0.0
+
