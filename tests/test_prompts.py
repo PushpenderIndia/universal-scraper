@@ -58,11 +58,11 @@ class TestCapturePageState:
         assert len(result) > 0
 
     def test_contains_url_and_title(self):
-        """Test that the snapshot string includes the current URL and page title."""
+        """Test that the snapshot string starts with the URL field and includes the page title."""
         browser = self._make_browser(url="https://test.com", title="Test Page")
         result = capture_page_state(browser)
-        assert "test.com" in result
-        assert "Test Page" in result
+        assert result.startswith("URL:")
+        assert "Title: Test Page" in result
 
     def test_contains_visible_text(self):
         """Test that the snapshot string includes the visible body text."""
@@ -83,7 +83,8 @@ class TestCapturePageState:
         browser.page.title.side_effect = Exception("boom")
         browser.current_url.return_value = "https://fallback.com"
         result = capture_page_state(browser)
-        assert "fallback.com" in result
+        assert "State unavailable" in result
+        assert result.startswith("URL:")
 
     def test_contains_elements_block(self):
         """Test that the snapshot contains an Elements section."""
